@@ -4,6 +4,7 @@ from fontTools.misc.transform import Transform
 from fontTools.pens.pointPen import AbstractPointPen
 
 from ufoLib2.objects.component import Component
+from ufoLib2.objects.deepComponent import DeepComponent
 from ufoLib2.objects.contour import Contour
 from ufoLib2.objects.point import Point
 
@@ -60,3 +61,14 @@ class GlyphPointPen(AbstractPointPen):
     ) -> None:
         component = Component(baseGlyph, transformation, identifier=identifier)
         self._glyph.components.append(component)
+
+    def addDeepComponent(
+        self,
+        baseGlyph: str,
+        transformation: list,
+        coord: dict,
+        identifier: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        deepComponent = DeepComponent(baseGlyph, transformation, coord, identifier=identifier)
+        self._glyph.deepComponents.append(deepComponent)

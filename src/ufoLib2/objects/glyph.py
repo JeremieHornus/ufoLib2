@@ -22,6 +22,7 @@ from fontTools.pens.pointPen import (
 
 from ufoLib2.objects.anchor import Anchor
 from ufoLib2.objects.component import Component
+from ufoLib2.objects.deepComponent import DeepComponent
 from ufoLib2.objects.contour import Contour
 from ufoLib2.objects.guideline import Guideline
 from ufoLib2.objects.image import Image
@@ -31,6 +32,8 @@ from ufoLib2.pointPens.glyphPointPen import GlyphPointPen
 if TYPE_CHECKING:
     from ufoLib2.objects.layer import Layer  # noqa: F401
 
+dcae_key = 'robocjk.deepComponent.atomicElements'
+cgdc_key = 'robocjk.characterGlyph.deepComponents'
 
 @attr.s(auto_attribs=True, slots=True, repr=False)
 class Glyph:
@@ -85,6 +88,8 @@ class Glyph:
     _anchors: List[Anchor] = attr.ib(factory=list)
     components: List[Component] = attr.ib(factory=list)
     """The list of components the glyph contains."""
+
+    deepComponents: List[DeepComponent] = attr.ib(factory=list)
 
     contours: List[Contour] = attr.ib(factory=list)
     """The list of contours the glyph contains."""
@@ -221,6 +226,7 @@ class Glyph:
         references."""
         del self._anchors[:]
         del self.components[:]
+        del self.deepComponents[:]
         del self.contours[:]
         del self._guidelines[:]
         self.image.clear()
@@ -338,6 +344,13 @@ class Glyph:
             contour.drawPoints(pointPen)
         for component in self.components:
             component.drawPoints(pointPen)
+
+        for e in [dcae_key, cgdc_key]:
+            if e in self.lib:
+                for dc in self.lib[e]:
+                    transformation = [dc['x'], dc['y'], dc['scalex'], dc['scaley'], dc['rotation']]
+                    dc = DeepComponent(dc['name'], transformation, dc['coord'])
+                    dc.drawPoints(pointPen)
 
     def getPen(self) -> AbstractPen:
         """Returns a pen for others to draw into self."""
