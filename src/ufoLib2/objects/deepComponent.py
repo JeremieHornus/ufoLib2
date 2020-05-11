@@ -24,7 +24,7 @@ class DeepComponent:
 
     transformation: list # x, y, scalex, scaley, rotate
 
-    coord: dict
+    coord: list
 
     identifier: Optional[str] = None
     """The globally unique identifier of the component."""
@@ -64,7 +64,7 @@ class DeepComponent:
         self.drawPoints(pointPen)
 
     def drawPoints(self, pointPen: AbstractPointPen) -> None:
-        """Draws points of component with given point pen."""
+        """Draws points of deep component with given point pen."""
         try:
             pointPen.addDeepComponent(
                 self.baseGlyph, self.transformation, self.coord, identifier=self.identifier

@@ -349,7 +349,10 @@ class Glyph:
             if e in self.lib:
                 for dc in self.lib[e]:
                     transformation = [dc['x'], dc['y'], dc['scalex'], dc['scaley'], dc['rotation']]
-                    dc = DeepComponent(dc['name'], transformation, dc['coord'])
+                    # Note: coord attribute should be a list of tuples not a dict
+                    # RoboCJK needs updating
+                    coord = [[i, v] for i, (k, v) in enumerate(dc['coord'].items())]
+                    dc = DeepComponent(dc['name'], transformation, coord)
                     dc.drawPoints(pointPen)
 
     def getPen(self) -> AbstractPen:

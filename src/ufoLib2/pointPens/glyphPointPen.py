@@ -66,7 +66,7 @@ class GlyphPointPen(AbstractPointPen):
         self,
         baseGlyph: str,
         transformation: list,
-        coord: dict,
+        coord: list,
         identifier: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
