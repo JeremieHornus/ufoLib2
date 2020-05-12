@@ -32,6 +32,7 @@ from ufoLib2.pointPens.glyphPointPen import GlyphPointPen
 if TYPE_CHECKING:
     from ufoLib2.objects.layer import Layer  # noqa: F401
 
+aegv_key = 'robocjk.atomicElement.glyphVariations'
 dcae_key = 'robocjk.deepComponent.atomicElements'
 cgdc_key = 'robocjk.characterGlyph.deepComponents'
 
@@ -90,6 +91,10 @@ class Glyph:
     """The list of components the glyph contains."""
 
     deepComponents: List[DeepComponent] = attr.ib(factory=list)
+
+    glyphVariationLayers: List[str] = attr.ib(factory=list)
+
+    variationGlyphs: List = attr.ib(factory=dict)
 
     contours: List[Contour] = attr.ib(factory=list)
     """The list of contours the glyph contains."""
@@ -354,6 +359,19 @@ class Glyph:
                     coord = [[i, v] for i, (k, v) in enumerate(dc['coord'].items())]
                     dc = DeepComponent(dc['name'], transformation, coord)
                     dc.drawPoints(pointPen)
+        
+        if aegv_key in self.lib:
+            glyphVariationLayers = [layerName for (axisName, layerName) in self.lib[aegv_key].items()]
+            self.addDepth(glyphVariationLayers)
+            if self.variationGlyphs:
+                print('glyph HAS variations', len(self.variationGlyphs))
+
+
+    def addDepth(self, glyphVariationLayers: list):
+        self.glyphVariationLayers = glyphVariationLayers
+
+    def addGlyphVariations(self, variationGlyphs: list):
+        self.variationGlyphs = variationGlyphs
 
     def getPen(self) -> AbstractPen:
         """Returns a pen for others to draw into self."""

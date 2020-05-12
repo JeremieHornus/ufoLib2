@@ -66,9 +66,11 @@ class GlyphPointPen(AbstractPointPen):
         self,
         baseGlyph: str,
         transformation: list,
-        coord: list,
-        identifier: Optional[str] = None,
-        **kwargs: Any,
+        coord: list
     ) -> None:
-        deepComponent = DeepComponent(baseGlyph, transformation, coord, identifier=identifier)
+        deepComponent = DeepComponent(baseGlyph, transformation, coord)
         self._glyph.deepComponents.append(deepComponent)
+
+    def addGlyphVariations(self, variationGlyphs: list):
+        self._glyph.variationGlyphs = variationGlyphs
+

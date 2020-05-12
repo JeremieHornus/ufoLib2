@@ -18,6 +18,7 @@ import attr
 import fs
 import fs.tempfs
 from fontTools.ufoLib import UFOFileStructure, UFOReader, UFOWriter
+from fontTools.pens.recordingPen import RecordingPointPen
 
 from ufoLib2.constants import DEFAULT_LAYER_NAME
 from ufoLib2.objects.dataSet import DataSet
@@ -215,6 +216,19 @@ class Font:
         if lazy:
             # keep the reader around so we can close it when done
             self._reader = reader
+
+        print('read glyphVariationLayers')
+        for glyph in self.layers.defaultLayer:
+            if hasattr(glyph, "glyphVariationLayers"):
+                glyph.variationGlyphs = []
+                for layerName in glyph.glyphVariationLayers:
+                    if glyph.name not in glyph.variationGlyphs:
+                        pen = RecordingPointPen()
+                        variation = self.layers[layerName][glyph.name].drawPoints(pen)
+                        glyph.variationGlyphs.append(pen.value)
+        # is it really necessary to re-write the glyphs?
+        self.layers.defaultLayer.write(reader.getGlyphSet())
+
         return self
 
     def __contains__(self, name: str) -> bool:
@@ -382,6 +396,8 @@ class Font:
             with the same name or append copies of the glyph.
         """
         self.layers.defaultLayer.addGlyph(glyph)
+        
+
 
     def newGlyph(self, name: str) -> Glyph:
         """Creates and returns new :class:`.Glyph` object in default layer with
