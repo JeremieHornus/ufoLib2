@@ -364,13 +364,17 @@ class Glyph:
             glyphVariationLayers = [layerName for (axisName, layerName) in self.lib[aegv_key].items()]
             self.addDepth(glyphVariationLayers)
             if self.variationGlyphs:
-                print('glyph HAS variations', len(self.variationGlyphs))
+                if len(self.variationGlyphs) > 0:
+                    pointPen.addVariationGlyphs(self.variationGlyphs)
+            if self.glyphVariationLayers:
+                if len(self.glyphVariationLayers) > 0:
+                    pointPen.addGlyphVariationLayers(self.glyphVariationLayers)
 
 
     def addDepth(self, glyphVariationLayers: list):
         self.glyphVariationLayers = glyphVariationLayers
 
-    def addGlyphVariations(self, variationGlyphs: list):
+    def addVariationGlyphs(self, variationGlyphs: list):
         self.variationGlyphs = variationGlyphs
 
     def getPen(self) -> AbstractPen:
