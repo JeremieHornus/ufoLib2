@@ -95,7 +95,7 @@ class Glyph:
 
     glyphVariationLayers: List[str] = attr.ib(factory=list)
 
-    variationGlyphs: List = attr.ib(factory=dict)
+    variationGlyphs: List = attr.ib(factory=list)
 
     contours: List[Contour] = attr.ib(factory=list)
     """The list of contours the glyph contains."""
@@ -363,14 +363,26 @@ class Glyph:
         
         for e in [aegv_key, dcgv_key]:
             if e in self.lib:
-                glyphVariationLayers = list(self.lib[e].keys())
+                glyphVariationLayers = list(self.lib[e].values() if all([(type(v) is str) 
+                                    for v in self.lib[e].values()]) else self.lib[e].keys())
                 self.addDepth(glyphVariationLayers)
-                # if self.variationGlyphs:
-                #     if len(self.variationGlyphs) > 0:
-                #         pointPen.addVariationGlyphs(self.variationGlyphs)
+            
+                if self.variationGlyphs:
+                    if len(self.variationGlyphs) > 0:
+                        pointPen.addVariationGlyphs(self.variationGlyphs)
+
                 if self.glyphVariationLayers:
                     if len(self.glyphVariationLayers) > 0:
                         pointPen.addGlyphVariationLayers(self.glyphVariationLayers)
+
+                variationGlyphs = []
+                for k, variationGlyph in  self.lib[e].items():
+                    if type(variationGlyph) is str:
+                        continue
+                    variationGlyphs.append([variationGlyph])
+                if variationGlyphs:
+                    pointPen.addVariationGlyphs(variationGlyphs)
+
 
 
     def addDepth(self, glyphVariationLayers: list):
