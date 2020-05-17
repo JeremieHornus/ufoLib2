@@ -65,14 +65,5 @@ class DeepComponent:
 
     def drawPoints(self, pointPen: AbstractPointPen) -> None:
         """Draws points of deep component with given point pen."""
-        try:
-            pointPen.addDeepComponent(
-                self.baseGlyph, self.transformation, self.coord, identifier=self.identifier
-            )
-        except TypeError:
-            pointPen.addDeepComponent(self.baseGlyph, self.transformation, self.coord)
-            warnings.warn(
-                "The addDeepComponent method needs an identifier kwarg. "
-                "The component's identifier value has been discarded.",
-                UserWarning,
-            )
+        pointPen.addDeepComponent(self.baseGlyph, self.transformation, self.coord)
+            

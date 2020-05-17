@@ -221,10 +221,12 @@ class Font:
             if hasattr(glyph, "glyphVariationLayers"):
                 glyph.variationGlyphs = []
                 for layerName in glyph.glyphVariationLayers:
-                    if glyph.name not in glyph.variationGlyphs:
-                        pen = RecordingPointPenCompact()
-                        variation = self.layers[layerName][glyph.name].drawPoints(pen)
-                        glyph.variationGlyphs.append(pen.value)
+                    if layerName in self.layers:
+                        if glyph.name not in glyph.variationGlyphs:
+                            pen = RecordingPointPenCompact()
+                            variation = self.layers[layerName][glyph.name].drawPoints(pen)
+                            glyph.variationGlyphs.append(pen.value)
+
         # is it really necessary to re-write the glyphs?
         self.layers.defaultLayer.write(reader.getGlyphSet())
 

@@ -34,6 +34,7 @@ if TYPE_CHECKING:
 
 aegv_key = 'robocjk.atomicElement.glyphVariations'
 dcae_key = 'robocjk.deepComponent.atomicElements'
+dcgv_key = 'robocjk.deepComponent.glyphVariations'
 cgdc_key = 'robocjk.characterGlyph.deepComponents'
 
 @attr.s(auto_attribs=True, slots=True, repr=False)
@@ -360,15 +361,16 @@ class Glyph:
                     dc = DeepComponent(dc['name'], transformation, coord)
                     dc.drawPoints(pointPen)
         
-        if aegv_key in self.lib:
-            glyphVariationLayers = [layerName for (axisName, layerName) in self.lib[aegv_key].items()]
-            self.addDepth(glyphVariationLayers)
-            if self.variationGlyphs:
-                if len(self.variationGlyphs) > 0:
-                    pointPen.addVariationGlyphs(self.variationGlyphs)
-            if self.glyphVariationLayers:
-                if len(self.glyphVariationLayers) > 0:
-                    pointPen.addGlyphVariationLayers(self.glyphVariationLayers)
+        for e in [aegv_key, dcgv_key]:
+            if e in self.lib:
+                glyphVariationLayers = list(self.lib[e].keys())
+                self.addDepth(glyphVariationLayers)
+                # if self.variationGlyphs:
+                #     if len(self.variationGlyphs) > 0:
+                #         pointPen.addVariationGlyphs(self.variationGlyphs)
+                if self.glyphVariationLayers:
+                    if len(self.glyphVariationLayers) > 0:
+                        pointPen.addGlyphVariationLayers(self.glyphVariationLayers)
 
 
     def addDepth(self, glyphVariationLayers: list):
